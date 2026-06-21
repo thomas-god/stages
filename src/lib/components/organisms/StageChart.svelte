@@ -2,10 +2,10 @@
 	import { isSome, none, unwrapOr, type Option } from '$lib/option';
 	import * as d3 from 'd3';
 
-	const marginTop = 20;
-	const marginRight = 50;
-	const marginBottom = 30;
-	const marginLeft = 50;
+	const marginTop = 10;
+	const marginRight = 10;
+	const marginBottom = 20;
+	const marginLeft = 45;
 
 	let gx: SVGGElement;
 	let gy: SVGGElement;
@@ -16,13 +16,15 @@
 		width,
 		height,
 		maxDistance = none(),
-		maxElevation = none()
+		yAxisNegativeOffser = 100,
+		yAxisResolution = 250
 	}: {
 		points: [number, number][];
 		width: number;
 		height: number;
-		maxElevation?: Option<number>;
 		maxDistance?: Option<number>;
+		yAxisNegativeOffser?: number;
+		yAxisResolution?: number;
 	} = $props();
 
 	let xScale = $derived(
@@ -37,20 +39,37 @@
 			[marginLeft, width - marginRight]
 		)
 	);
+	let xTickValues = $derived(
+		Array.from({ length: Math.ceil(xScale.domain()[1] / 50 / 1000) }, (_v, idx) => idx * 50 * 1000)
+	);
 	let xAxis = $derived(
-		d3.axisBottom(xScale).tickFormat((value, _idx) => (value.valueOf() / 1000).toString() + ' km')
+		d3
+			.axisBottom(xScale)
+			.tickFormat((value, _idx) => (value.valueOf() / 1000).toString() + ' km')
+			.tickValues(xTickValues)
 	);
 	let yScale = $derived(
 		d3.scaleLinear(
-			isSome(maxElevation) ? [0, maxElevation.value] : d3.extent(points, (point) => point[1]),
+			[-yAxisNegativeOffser, d3.max(points, (point) => point[1])],
 			[height - marginBottom, marginTop]
+		)
+	);
+	let yTickValues = $derived(
+		Array.from(
+			{ length: Math.ceil(yScale.domain()[1] / yAxisResolution) },
+			(v, idx) => idx * yAxisResolution
 		)
 	);
 	let yAxis = $derived(
 		d3
 			.axisLeft(yScale)
-			.ticks(6)
-			.tickFormat((value, _idx) => `${value} m`)
+			.tickFormat((value, idx) => {
+				if (yTickValues.length <= 2) {
+					return `${value} m`;
+				}
+				return idx % 2 !== 0 ? '' : `${value} m`;
+			})
+			.tickValues(yTickValues)
 	);
 
 	const area = $derived(
@@ -66,7 +85,7 @@
 		d3.select(gy).call(yAxis, yScale);
 		d3.select(gyGrid)
 			.selectAll('line')
-			.data(yScale.ticks(6))
+			.data(yTickValues)
 			.join('line')
 			.attr('x1', 0)
 			.attr('x2', width - marginRight - marginLeft)
