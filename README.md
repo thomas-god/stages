@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/346a3e3a-d820-4a9f-abf3-18cbc87364f4/deploy-status)](https://app.netlify.com/projects/loquacious-halva-6e00b6/deploys)
+
 ## Stages
 
 Visualize the elevation profile of each stage of a stage race with consistent distance and elevation
