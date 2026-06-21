@@ -5,8 +5,8 @@
 	import { isNone, some, type Option } from '$lib/option';
 
 	let stages = $derived(JSON.parse(stagesRaw));
-	let maxElevation: Option<number> = $state(some(stages.max_max_elevation));
-	let maxDistance: Option<number> = $state(some(stages.max_distance));
+	let maxElevation: Option<number> = $derived(some(stages.max_max_elevation));
+	let maxDistance: Option<number> = $derived(some(stages.max_distance));
 
 	let width = $state(300);
 
@@ -15,9 +15,8 @@
 	let heightResolution = 250;
 
 	let minElevation = -100;
-	let _maxElevation = stages.max_max_elevation;
 
-	let heightCoeff = $derived((maxHeight - minHeight) / (_maxElevation - minElevation));
+	let heightCoeff = $derived((maxHeight - minHeight) / (stages.max_max_elevation - minElevation));
 	let heightOffset = $derived(minHeight - heightCoeff * minElevation);
 
 	// Scale down the maxHeight depending of the max elevation of the stage compared to the stage
@@ -33,31 +32,8 @@
 	};
 </script>
 
-<!-- <div class="flex flex-row gap-2 p-2">
-	<label class="label">
-		Shared elevation scale
-		<input
-			type="checkbox"
-			class="toggle toggle-sm"
-			bind:checked={
-				() => isSome(maxElevation),
-				(v) => (maxElevation = v ? some(stages.max_max_elevation) : none())
-			}
-		/>
-	</label>
-	<label class="label">
-		Shared distance scale
-		<input
-			type="checkbox"
-			class="toggle toggle-sm"
-			bind:checked={
-				() => isSome(maxDistance), (v) => (maxDistance = v ? some(stages.max_distance) : none())
-			}
-		/>
-	</label>
-</div> -->
-
-<div bind:clientWidth={width} class="flex flex-col gap-2 p-1 max-w-6xl justify-center mx-auto">
+<h2 class="text-xl p-2 text-center">Tour de France 2026</h2>
+<div bind:clientWidth={width} class="flex flex-col gap-2 p-1 max-w-6xl justify-center mx-auto mb-4">
 	{#each stages.stages as stage, idx}
 		<div class="flex flex-col">
 			<div class="py-1 text-sm text-center font-light opacity-85">

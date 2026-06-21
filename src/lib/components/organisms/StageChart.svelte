@@ -29,13 +29,7 @@
 
 	let xScale = $derived(
 		d3.scaleLinear(
-			[
-				0,
-				unwrapOr(
-					maxDistance,
-					d3.max(points, (point) => point[0])
-				)
-			],
+			[0, unwrapOr(maxDistance, d3.max(points, (point) => point[0]) || 0)],
 			[marginLeft, width - marginRight]
 		)
 	);
@@ -50,7 +44,7 @@
 	);
 	let yScale = $derived(
 		d3.scaleLinear(
-			[-yAxisNegativeOffser, d3.max(points, (point) => point[1])],
+			[-yAxisNegativeOffser, d3.max(points, (point) => point[1]) || 0],
 			[height - marginBottom, marginTop]
 		)
 	);
@@ -81,8 +75,8 @@
 	);
 
 	$effect(() => {
-		d3.select(gx).call(xAxis, xScale);
-		d3.select(gy).call(yAxis, yScale);
+		d3.select(gx).call(xAxis);
+		d3.select(gy).call(yAxis);
 		d3.select(gyGrid)
 			.selectAll('line')
 			.data(yTickValues)
