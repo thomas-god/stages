@@ -5,7 +5,7 @@
 	import { isNone, isSome, none, some, type Option } from '$lib/option';
 
 	let stages = $derived(JSON.parse(stagesRaw));
-	let maxElevation: Option<number> = $state(none());
+	let maxElevation: Option<number> = $state(some(stages.max_max_elevation));
 	let maxDistance: Option<number> = $state(some(stages.max_distance));
 
 	let width = $state(300);
