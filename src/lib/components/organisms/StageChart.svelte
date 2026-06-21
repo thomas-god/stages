@@ -2,10 +2,10 @@
 	import { isSome, none, unwrapOr, type Option } from '$lib/option';
 	import * as d3 from 'd3';
 
-	const marginTop = 10;
-	const marginRight = 10;
-	const marginBottom = 20;
 	const marginLeft = 45;
+	const marginRight = 5;
+	const marginTop = 0;
+	const marginBottom = 20;
 
 	let gx: SVGGElement;
 	let gy: SVGGElement;

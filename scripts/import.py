@@ -57,6 +57,30 @@ STAGE_TYPES: List[Literal["flat", "hilly", "moutain", "tt", "ttt"]] = [
     "flat",
 ]
 
+STAGE_NAMES: List[str] = [
+    "Barcelone > Barcelone",
+    "Tarragone > Barcelone",
+    "Granollers > Les Angles",
+    "Carcassonne > Foix",
+    "Lannemezan > Pau",
+    "Pau > Gavarnie-Gèdre",
+    "Hagetmau > Bordeaux",
+    "Périgueux > Bergerac",
+    "Malemort > Ussel",
+    "Aurillac > Le Lioran",
+    "Vichy > Nevers",
+    "Circuit Nevers Magny-Cours > Chalon-sur-Saône",
+    "Dole > Belfort",
+    "Mulhouse > Le Markstein Fellering",
+    "Champagnole > Plateau de Solaison",
+    "Évian-les-Bains > Thonon-les-Bains",
+    "Chambery > Voiron",
+    "Voiron > Orcières-Merlette",
+    "Gap > Alpe d'Huez",
+    "Le Bourg d'Oisans > Alpe d'Huez",
+    "Thoiry > Paris Champs-Élysées",
+]
+
 
 class Coordinates(NamedTuple):
     lat: float
@@ -157,7 +181,7 @@ if __name__ == "__main__":
         stages.append(
             {
                 "number": idx + 1,
-                "name": stage.find("desc").text,
+                "name": STAGE_NAMES[idx],
                 "distance": statistics.total_distance,
                 "elevation_gained": ELEVATION_GAINED[idx],
                 "max_elevation": statistics.max_elevation,

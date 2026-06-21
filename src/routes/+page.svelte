@@ -2,7 +2,7 @@
 	import StageChart from '$lib/components/organisms/StageChart.svelte';
 
 	import stagesRaw from '$lib/assets/stages.json?raw';
-	import { isNone, isSome, none, some, type Option } from '$lib/option';
+	import { isNone, some, type Option } from '$lib/option';
 
 	let stages = $derived(JSON.parse(stagesRaw));
 	let maxElevation: Option<number> = $state(some(stages.max_max_elevation));
@@ -29,48 +29,41 @@
 		}
 
 		const roundedMaxElevation = Math.ceil(stageMaxElevation / heightResolution) * heightResolution;
-		return heightOffset + heightCoeff * roundedMaxElevation + 30;
+		return heightOffset + heightCoeff * roundedMaxElevation + 20;
 	};
 </script>
 
-<label class="label">
-	Same elevation scale
-	<input
-		type="checkbox"
-		class="toggle"
-		bind:checked={
-			() => isSome(maxElevation),
-			(v) => (maxElevation = v ? some(stages.max_max_elevation) : none())
-		}
-	/>
-</label>
-<label class="label">
-	Same distance scale
-	<input
-		type="checkbox"
-		class="toggle"
-		bind:checked={
-			() => isSome(maxDistance), (v) => (maxDistance = v ? some(stages.max_distance) : none())
-		}
-	/>
-</label>
+<!-- <div class="flex flex-row gap-2 p-2">
+	<label class="label">
+		Shared elevation scale
+		<input
+			type="checkbox"
+			class="toggle toggle-sm"
+			bind:checked={
+				() => isSome(maxElevation),
+				(v) => (maxElevation = v ? some(stages.max_max_elevation) : none())
+			}
+		/>
+	</label>
+	<label class="label">
+		Shared distance scale
+		<input
+			type="checkbox"
+			class="toggle toggle-sm"
+			bind:checked={
+				() => isSome(maxDistance), (v) => (maxDistance = v ? some(stages.max_distance) : none())
+			}
+		/>
+	</label>
+</div> -->
 
-<div class="graphs-container p-2">
+<div bind:clientWidth={width} class="flex flex-col gap-2 p-1 max-w-6xl justify-center mx-auto">
 	{#each stages.stages as stage, idx}
-		<!-- <div class="stage-details text-sm" style={`grid-row: ${idx + 1}`}>
-			<div>
-				{stage.name}
+		<div class="flex flex-col">
+			<div class="py-1 text-sm text-center font-light opacity-85">
+				S{idx + 1}:
+				{stage.name} <span class="italic opacity-70">({stage.elevation_gained}m D+)</span>
 			</div>
-			<div>{stage.type}</div>
-			<div>
-				{(stage.distance / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} km
-			</div>
-			<div>
-				{stage.elevation_gained} m
-			</div>
-			<div>{stage.elevation_range}</div>
-		</div> -->
-		<div class="stage-chart" bind:clientWidth={width} style={`grid-row: ${idx + 1}`}>
 			<StageChart
 				points={stage.points}
 				{width}
@@ -81,19 +74,3 @@
 		</div>
 	{/each}
 </div>
-
-<style>
-	.graphs-container {
-		display: flex;
-		flex-direction: column;
-		/* grid-template-columns: 200px auto; */
-	}
-
-	.stage-details {
-		grid-column: 1;
-	}
-
-	.stage-chart {
-		grid-column: 2;
-	}
-</style>
